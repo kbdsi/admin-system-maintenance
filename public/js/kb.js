@@ -1,0 +1,1 @@
+!function(){document.querySelectorAll(".js-fullscreen").forEach((function(e){e.addEventListener("click",(function(){!!document.fullscreenElement?document.exitFullscreen():document.body.requestFullscreen()}))}))}();

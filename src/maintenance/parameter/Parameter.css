@@ -1,0 +1,24 @@
+.btn-min-width {
+    min-width: 70px;
+}
+
+.label-bold {
+    font-weight: bold;
+}
+
+.label-mandatory {
+    color: blue;    
+}
+
+.row-highlight {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .margin-top-rem-1 {
+      margin-top: 1rem;
+  }
+
+  .margin-top-rem-1-point-75 {
+    margin-top: 1.75rem;
+}
