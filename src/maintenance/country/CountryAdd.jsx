@@ -15,13 +15,22 @@ import axios from "axios";
 // };
 // console.log(validateEmail('naufaladigm@ail.commmmmmmm'));
 const validateDesc = (description) => {
-    return (description.length > 10 && description.length < 30);
+    return (description.length > 10 && description.length < 30 && description !== null);
 
 
 };
-// console.log(validateDesc('asepppp'))
 
+const validateName = (name) => {
+    return (name.length > 10);
+}
+console.log(validateName('aseeepppppppp'))
 
+const validateCode = (code) => {
+    var re = /^[a-zA-Z0-9]+$/
+
+    return (re.test(code) && code.length <= 5)
+}
+console.log("code " + validateCode("@@@22RRJEEWW2"));
 
 
 class CountryAdd extends Component {
@@ -183,6 +192,8 @@ class CountryAdd extends Component {
         });
     }
     handleChangeName(e) {
+
+        validateName(e)
         this.setState({
             countryAdded: {
                 ...this.state.countryAdded,
@@ -192,6 +203,8 @@ class CountryAdd extends Component {
         });
     }
     handleChangeCode(e) {
+
+        validateCode(e)
         this.setState({
             countryAdded: {
                 ...this.state.countryAdded,
@@ -225,17 +238,18 @@ class CountryAdd extends Component {
 
 
 
+
+
     render() {
 
+        const isEverythingValid =
+            validateDesc(this.state.countryAdded.description) && validateName(this.state.countryAdded.name) && validateCode(this.state.countryAdded.code);
 
         return (
             <>
                 <div className="container-fluid">
                     <h1 className="h3 mb-1 text-gray-800">Country</h1>
-                    {/* {!validateEmail('asepfn6@gmail.com') &&
 
-                        <p>Salah</p>
-                    } */}
 
                     <p className="mb-4" />
 
@@ -254,7 +268,10 @@ class CountryAdd extends Component {
                                                     <label htmlFor="inputCode" className="col-sm-3 col-form-label margin-top-rem-1 label-bold label-mandatory">Code</label>
                                                     <label className="col-sm-1 col-form-label margin-top-rem-1">:</label>
                                                     {/* <input type="text" className="col-sm-7 form-control margin-top-rem-1" id="inputCode" placeholder="Code" /> */}
-                                                    <input required={true} onChange={this.handleChangeCode} value={this.state.countryAdded.code} className="col-sm-7 form-control margin-top-rem-1" />
+                                                    <input required={true} onChange={this.handleChangeCode} value={this.state.countryAdded.code} className={!validateCode(this.state.countryAdded.code) && this.state.countryAdded.code !== "" ? "col-sm-7 is-invalid form-control margin-top-rem-1" : "col-sm-7 form-control margin-top-rem-1"} />
+                                                    {!validateCode(this.state.countryAdded.code) && (
+                                                        <span className="invalid-feedback mt-2">* Code must not be longer than 5 characters and doesnt contain any special characters</span>
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -263,7 +280,10 @@ class CountryAdd extends Component {
                                                     <label htmlFor="inputName" className="col-sm-3 col-form-label margin-top-rem-1 label-bold label-mandatory">Name</label>
                                                     <label className="col-sm-1 col-form-label margin-top-rem-1">:</label>
                                                     {/* <input type="text" className="col-sm-7 form-control margin-top-rem-1" id="inputName" placeholder="Name" /> */}
-                                                    <input required={true} value={this.state.countryAdded.name} onChange={this.handleChangeName} className="col-sm-7 form-control margin-top-rem-1" />
+                                                    <input required={true} value={this.state.countryAdded.name} onChange={this.handleChangeName} className={!validateDesc(this.state.countryAdded.name) && this.state.countryAdded.name !== "" ? "col-sm-7 is-invalid form-control margin-top-rem-1" : "col-sm-7 form-control margin-top-rem-1"} />
+                                                    {!validateName(this.state.countryAdded.name) && (
+                                                        <span className="invalid-feedback mt-2">* Name must be longer than 10-30  characters characters</span>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -273,11 +293,14 @@ class CountryAdd extends Component {
                                                 <div className="form-group row">
                                                     <label htmlFor="inputDescription" className="col-sm-3 col-form-label margin-top-rem-1 label-bold">Description</label>
                                                     <label className="col-sm-1 col-form-label margin-top-rem-1">:</label>
-                                                    {/* <input type="text" className="col-sm-7 form-control margin-top-rem-1" id="inputDescription" placeholder="Description" /> */}
+                                                    {/* <input type="text" className="col-sm-7 form-control margin-top-rem-1" id="inputDescription" placehohandleChangeDescriptionlder="Description" /> */}
                                                     <input required={true} id="description" value={this.state.countryAdded.description} onChange={this.handleChangeDescription} className={!validateDesc(this.state.countryAdded.description) && this.state.countryAdded.description !== "" ? "col-sm-7 is-invalid form-control margin-top-rem-1" : "col-sm-7 form-control margin-top-rem-1"} />
-                                                    {!validateDesc(this.state.countryAdded.description) && this.state.countryAdded.description !== "" && (
-                                                        <span className="invalid-feedback mt-2">* Description must be longer than 10 characters</span>
+                                                    {!validateDesc(this.state.countryAdded.description) && (
+                                                        <span className="invalid-feedback mt-2">* Description must be longer than 10-30  characters characters</span>
                                                     )}
+                                                    {console.log("desc nya adalah " + this.state.countryAdded.description + " dan bernilai " + validateDesc(this.state.countryAdded.description))}
+
+
 
 
 
@@ -323,7 +346,7 @@ class CountryAdd extends Component {
                                                 <div className="col-md-8" />
 
                                                 <div className="col-md-4">
-                                                    <button type={"submit"} className="btn btn-primary btn-min-width margin-top-rem-1 button-wrapper" disabled={validateDesc(this.state.countryAdded.description) === false
+                                                    <button type={"submit"} className="btn btn-primary btn-min-width margin-top-rem-1 button-wrapper" disabled={isEverythingValid === false
 
 
 
