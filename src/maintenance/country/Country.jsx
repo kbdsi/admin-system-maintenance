@@ -3,6 +3,8 @@ import { NavLink } from "react-router-dom";
 import "./Country.css";
 import TableTemplate from "../TableTemplate";
 import axios from "axios";
+import dinoGif from "../../public/img/gif/Social_dino-with-hat.gif"
+import ErrorDisplay from "../ErrorDisplay";
 
 class Country extends Component {
     //saat dipanggil, langsung render awal dengan country list yang kosong karena belum ada pencarian
@@ -23,6 +25,7 @@ class Country extends Component {
             headerWantsToBeRender: [],
             tableTitle: "",
             searchClicked: false,
+            errorResult: ""
         };
         this.handleSearchedImmediate = this.handleSearchedImmediate.bind(this);
         this.handleSearchedSubmited = this.handleSearchedSubmited.bind(this);
@@ -196,57 +199,72 @@ class Country extends Component {
         // }).then((res) => console.log(res.body));
 
         //get all country from mbak izzan || Method POST
-        // axios.request({
-        //     method: 'POST',
-        //     url: `https://kbdsi-mtsys.herokuapp.com/v0/country/retrieve-by-name`,
-        //     headers: {
-        //         //   'Authorization': token
-        //         Accept: "application/json",
-        //         "Access-Control-Allow-Origin": "*",
-        //     },
-        //     data: {
-        //         data: "string",
-        //         identity: {
-        //             reqDateTime: "string",
-        //             platform: "string",
-        //             token: "string",
-        //             userId: "string"
-        //         },
-        //         paging: {
-        //             limit: 0,
-        //             page: 0,
-        //             totalPage: 0,
-        //             totalRecord: 0
-        //         },
-        //         service: "string"
+        axios.request({
+            method: 'POST',
+            url: `https://kbdsi-mt.herokuapp.com/mt/country/search`,
+            headers: {
+                //   'Authorization': token
+                Accept: "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+            data: {
 
-        //     },
-
-        // }).then((response) => response.data.data)
-        //     .then((result) => {
-        //         console.log(result);
-        //         this.setState({
-        //             countryList: result,
-        //         });
-        //         //console.log(this.state.countryList);
-        //     });
-
-        axios
-            .get("https://kbdsi-mtsys.herokuapp.com/v0/country/retrieve-all", {
-                headers: {
-                    //Accept: "application/json",
-                    Accept: "application/json",
-                    "Access-Control-Allow-Origin": "*",
+                header: {
+                    request_id: "1",
+                    user_id: "2",
+                    request_date: "2022-03-25 09:09:09.000",
+                    screen_code: "MT_0002R"
                 },
-            })
-            .then((response) => response.data.data)
+                body: {
+                    body_request: {
+                        search_by: "CODE",
+                        search_criteria: "",
+                    }
+                }
+
+
+            },
+
+        }).then((response) => response.data.body.body_response.entitys)
             .then((result) => {
                 console.log(result);
                 this.setState({
                     countryList: result,
                 });
                 //console.log(this.state.countryList);
-            });
+            })
+            .catch((error) => {
+                this.setState({
+                    errorResult: error,
+                });
+                console.log("pesan error ", error.response.data.error);
+            })
+            ;
+
+
+        // axios
+        //     .get("https://kbdsi-mtsys.herokuapp.com/v0/country/retrieve-all", {
+        //         headers: {
+        //             //Accept: "application/json",
+        //             Accept: "application/json",
+        //             "Access-Control-Allow-Origin": "*",
+        //         },
+        //     })
+        //     .then((response) => response.data.data)
+        //     .then((result) => {
+        //         console.log(result);
+        //         this.setState({
+        //             countryList: result,
+        //         });
+        //         //console.log(this.state.countryList);
+        //     })
+        //     .catch((error) => {
+        //         this.setState({
+        //             errorResult: error
+        //         });
+        //         console.log("pesan error " + error);
+        //     })
+        //     ;
 
         //get from mas satriyo  
         // axios.get('https://kbdsi-core.herokuapp.com/mt/parameter/get', {
@@ -337,148 +355,97 @@ class Country extends Component {
 
 
     render() {
+
         return (
+
             <>
+                {this.state.errorResult == "" ?
+                    <div className="container-fluid">
+                        <h1 className="h3 mb-1 text-gray-800">Country</h1>
 
+                        <p className="mb-4" />
 
-                <div className="container-fluid">
-                    <h1 className="h3 mb-1 text-gray-800">Country</h1>
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="card shadow mb-4">
+                                    <div className="card-header py-3">
+                                        <h6 className="m-0 font-weight-bold text-primary">Search</h6>
+                                    </div>
 
-                    <p className="mb-4" />
+                                    <div className="card-body">
+                                        <form className="row" onSubmit={this.handleSearchedSubmited}>
+                                            <div className="row-highlight col-sm-12 bg-gray-100">
+                                                <div className="col-md-6">
+                                                    <div className="form-group row">
+                                                        <label htmlFor="inputCode" className="col-sm-4 col-form-label margin-top-rem-1 label-bold label-mandatory">Search By</label>
+                                                        <label className="col-sm-1 col-form-label margin-top-rem-1">:</label>
+                                                        <div className="col-sm-6 col-form-label margin-top-rem-1 label-bold" id="inputCode">
+                                                            <div className="form-check">
+                                                                <input className="form-check-input" type={"radio"} value="Code" onClick={this.searchByCode} name="criteria" required />
+                                                                <label className="form-check-label" htmlFor="radioSearchByCode">
+                                                                    Code
+                                                                </label>
+                                                            </div>
 
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <div className="card shadow mb-4">
-                                <div className="card-header py-3">
-                                    <h6 className="m-0 font-weight-bold text-primary">Search</h6>
-                                </div>
-
-                                <div className="card-body">
-                                    <form className="row" onSubmit={this.handleSearchedSubmited}>
-                                        <div className="row-highlight col-sm-12 bg-gray-100">
-                                            <div className="col-md-6">
-                                                <div className="form-group row">
-                                                    <label htmlFor="inputCode" className="col-sm-4 col-form-label margin-top-rem-1 label-bold label-mandatory">Search By</label>
-                                                    <label className="col-sm-1 col-form-label margin-top-rem-1">:</label>
-                                                    <div className="col-sm-6 col-form-label margin-top-rem-1 label-bold" id="inputCode">
-                                                        <div className="form-check">
-                                                            <input className="form-check-input" type={"radio"} value="Code" onClick={this.searchByCode} name="criteria" required />
-                                                            <label className="form-check-label" htmlFor="radioSearchByCode">
-                                                                Code
-                                                            </label>
-                                                        </div>
-
-                                                        <div className="form-check">
-                                                            <input className="form-check-input" type={"radio"} value="Name" onClick={this.searchByName} name="criteria" required />
-                                                            <label className="form-check-label" htmlFor="radioSearchByName">
-                                                                Name
-                                                            </label>
+                                                            <div className="form-check">
+                                                                <input className="form-check-input" type={"radio"} value="Name" onClick={this.searchByName} name="criteria" required />
+                                                                <label className="form-check-label" htmlFor="radioSearchByName">
+                                                                    Name
+                                                                </label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <div className="col-md-6" />
                                             </div>
 
-                                            <div className="col-md-6" />
-                                        </div>
+                                            <div className="row-highlight col-sm-12 bg-gray-200">
+                                                <div className="col-md-6">
+                                                    <div className="form-group row">
+                                                        <label htmlFor="inputSearch" className="col-sm-4 col-form-label margin-top-rem-1 label-bold label-mandatory">Search Criteria</label>
+                                                        <label className="col-sm-1 col-form-label margin-top-rem-1">:</label>
+                                                        <input className="col-sm-6 form-control margin-top-rem-1 label-bold" value={this.state.countryDemanded} type={"text"} onChange={this.handleSearchedImmediate} />
+                                                    </div>
+                                                </div>
 
-                                        <div className="row-highlight col-sm-12 bg-gray-200">
-                                            <div className="col-md-6">
-                                                <div className="form-group row">
-                                                    <label htmlFor="inputSearch" className="col-sm-4 col-form-label margin-top-rem-1 label-bold label-mandatory">Search Criteria</label>
-                                                    <label className="col-sm-1 col-form-label margin-top-rem-1">:</label>
-                                                    <input className="col-sm-6 form-control margin-top-rem-1 label-bold" value={this.state.countryDemanded} type={"text"} onChange={this.handleSearchedImmediate} />
+                                                <div className="col-md-6" />
+                                            </div>
+
+                                            <div className="col-sm-12">
+                                                <div className="form-group row margin-top-rem-1">
+                                                    <div className="col-md-8" />
+
+                                                    <div className="col-md-4">
+                                                        <button type={"submit"} className="btn btn-primary btn-min-width margin-top-rem-1 button-wrapper">Search</button>
+                                                        <NavLink className="btn btn-primary btn-min-width margin-top-rem-1 button-wrapper" to="/countryAdd">Add</NavLink>
+                                                    </div>
                                                 </div>
                                             </div>
-
-                                            <div className="col-md-6" />
-                                        </div>
-
-                                        <div className="col-sm-12">
-                                            <div className="form-group row margin-top-rem-1">
-                                                <div className="col-md-8" />
-
-                                                <div className="col-md-4">
-                                                    <button type={"submit"} className="btn btn-primary btn-min-width margin-top-rem-1 button-wrapper">Search</button>
-                                                    <NavLink className="btn btn-primary btn-min-width margin-top-rem-1 button-wrapper" to="/countryAdd">Add</NavLink>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <TableTemplate
-                                tableShouldShow={this.state.searchClicked}
-                                tableShouldUpdate={this.state.showSearchResult}
-                                headersField={this.state.headerWantsToBeRender}
-                                tableContent={this.state.tableContentWantToBeRendered}
-                                tableTitle={this.state.tableTitle}
-                                addButtonShow={true}
-                                addButtonNav={"/countryAdd"}
-                                linkToDetail={["/country", 1]}
-                            />
-
-                            <div className="card shadow mb-4">
-                                <div className="card-header py-3">
-                                    <h6 className="m-0 font-weight-bold text-primary">Listing</h6>
-                                </div>
-
-                                <div className="card-body">
-                                    No Data Found
-                                    <div className="table-responsive">
-                                        <table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0">
-                                            <thead>
-                                                <tr className="label-mandatory">
-                                                    <th>Code</th>
-                                                    <th>Description</th>
-                                                    <th>Is Enable</th>
-                                                    <th>Is System</th>
-                                                    <th>Is Deleted</th>
-                                                </tr>
-                                            </thead>
-
-                                            <tfoot>
-                                                <tr className="label-mandatory">
-                                                    <th>Code</th>
-                                                    <th>Description</th>
-                                                    <th>Is Enable</th>
-                                                    <th>Is System</th>
-                                                    <th>Is Deleted</th>
-                                                </tr>
-                                            </tfoot>
-
-                                            <tbody>
-                                                <tr>
-                                                    <td><NavLink to="/parameterDetail" >ID</NavLink></td>
-                                                    <td>INDONESIA</td>
-                                                    <td>Yes</td>
-                                                    <td>No</td>
-                                                    <td>No</td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>USA</td>
-                                                    <td>UNITED STATE OF AMERICA</td>
-                                                    <td>Yes</td>
-                                                    <td>No</td>
-                                                    <td>No</td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>KR</td>
-                                                    <td>SOUTH KOREA</td>
-                                                    <td>Yes</td>
-                                                    <td>No</td>
-                                                    <td>No</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        </form>
                                     </div>
                                 </div>
+
+
+                                <TableTemplate
+                                    tableShouldShow={this.state.searchClicked}
+                                    tableShouldUpdate={this.state.showSearchResult}
+                                    headersField={this.state.headerWantsToBeRender}
+                                    tableContent={this.state.tableContentWantToBeRendered}
+                                    tableTitle={this.state.tableTitle}
+                                    addButtonShow={true}
+                                    addButtonNav={"/countryAdd"}
+                                    linkToDetail={["/country", 1]}
+                                />
+
+
+
                             </div>
                         </div>
                     </div>
-                </div>
+                    : <ErrorDisplay errorMessage={this.state.errorResult.response.data.error} />}
+
+
             </>
         );
     }

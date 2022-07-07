@@ -196,78 +196,51 @@ class Parameter extends Component {
         //get all parameter from mbak izzan || Method POST
         axios.request({
             method: 'POST',
-            url: "https://kbdsi-core.herokuapp.com/mt/parameter/search",
+            url: "https://kbdsi-core.herokuapp.com/mt/parameter/get",
             headers: {
                 //   'Authorization': token
                 Accept: "application/json",
                 // Accept: "*/*",
                 "Access-Control-Allow-Origin": "*",
-                request_date: "2022-06-24T06:28:53.533Z",
-                request_id: "string",
-                request_server_date: "2022-06-24T06:28:53.533Z",
-                response_date: "2022-06-24T06:28:53.533Z",
-                screen_code: "string",
-                table_code: "string",
-                user_id: "string"
+                // header: {
+                "request_id": "1",
+                "user_id": "2",
+                "request_date": "2022-03-25 09:09:09.000",
+                "screen_code": "MT_0001R"
+                // }
+
             },
 
             data: {
-                body: {
-                    body_request: {
-                        entitys: [
-                            {}
-                        ],
-                        page_at: 0,
-                        save_one_by_one: true,
-                        search_by: "string",
-                        search_criteria: "string",
-                        table_code: "string",
-                        total_entity_per_page: 0
-                    },
-                    body_response: {
-                        entity: {},
-                        entity_per_page: 0,
-                        entitys: [
-                            {}
-                        ],
-                        page: 0,
-                        total_entitys: 0,
-                        total_pages: 0
-                    },
-                    message: {
-                        additional_messages: [
-                            {}
-                        ],
-                        code: "string",
-                        message: "string"
-                    }
-                },
-                footer: {
-                    messages: [
-                        {
-                            additional_messages: [
-                                {}
-                            ],
-                            code: "string",
-                            message: "string"
-                        }
-                    ]
-                },
-                header: {
-                    request_date: "2022-06-24T06:28:53.541Z",
-                    request_id: "string",
-                    request_server_date: "2022-06-24T06:28:53.541Z",
-                    response_date: "2022-06-24T06:28:53.541Z",
-                    screen_code: "string",
-                    table_code: "string",
-                    user_id: "string"
-                }
+
+                // header: {
+                //     request_id: "1",
+                //     user_id: "2",
+                //     request_date: "2022-03-25 09:09:09.000",
+                //     screen_code: "MT_0001R"
+                // },
+                // body: {
+                //     body_request: {
+                //         table_code: "kbmt.mt_language",
+                //         search_by: "CODE",
+                //         search_criteria: "id"
+                //     }
+                // }
+                // body: {
+                // body_request: {
+                table_code: "kbmt.mt_language",
+                search_by: "CODE",
+                search_criteria: "id"
+                // }
+                // }
+
+
 
 
 
             },
 
-        }).then((response) => response.data.data)
+        }).then((response) => response)
             .then((result) => {
                 console.log(result);
                 this.setState({

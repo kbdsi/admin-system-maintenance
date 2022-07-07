@@ -2,6 +2,8 @@ import { Component } from "react";
 import "./Province.css";
 import axios from "axios";
 import TableTemplate from "../TableTemplate";
+import { NavLink } from "react-router-dom";
+import Select from 'react-select';
 
 class Province extends Component {
 
@@ -18,11 +20,13 @@ class Province extends Component {
             provinceDemanded: "",
             searchCriteria: "",
             showSearchResult: false,
+            countryList: [],
             provinceList: [],
             tableContentWantToBeRendered: [],
             headerWantsToBeRender: [],
             tableTitle: "",
             searchClicked: false,
+            selectedCountry: {}
         };
         this.handleSearchedImmediate = this.handleSearchedImmediate.bind(this);
         this.handleSearchedSubmited = this.handleSearchedSubmited.bind(this);
@@ -39,6 +43,7 @@ class Province extends Component {
         e.preventDefault();
         if (this.state.provinceDemanded.length === 0) {
             var records = this.state.provinceList;
+            console.log("record " + records);
             var recordsTem = [];
             var headersTem = [];
             headersTem.push("No.");
@@ -94,7 +99,7 @@ class Province extends Component {
                     record.push(records[i].name.toString());
                     recordsTem.push(record);
                     if (i === records.length - 1) {
-                        x
+
                         if (recordsTem.length > 0) {
                             this.setState((state) => ({
                                 tableContentWantToBeRendered: recordsTem,
@@ -109,7 +114,7 @@ class Province extends Component {
                     }
                 }
             } else if (this.state.searchCriteria === "Name") {
-                var records = this.state.provinceList.filter((province) => province.name.toString().includes(this.state.provinceDemanded.toUpperCase()));
+                var records = this.state.provinceList;
                 //console.log(records);
                 //console.log(records.length);
                 var recordsTem = [];
@@ -145,6 +150,8 @@ class Province extends Component {
                 }
             }
         }
+
+
     }
     searchByName(e) {
         this.setState({
@@ -196,24 +203,6 @@ class Province extends Component {
         //   // body: JSON.stringify(data) // body data type must match "Content-Type" header
         // }).then((res) => console.log(res.body));
         //get all province from mbak izza
-        // axios
-        //   .get("https://kbdsi-mtsys.herokuapp.com/v0/province/retrieve-all", {
-        //     headers: {
-        //       //Accept: "application/json",
-        //       Accept: "application/json",
-        //       // "Access-Control-Allow-Origin": "*",
-        //     },
-        //   })
-        //   .then((response) => response.data.data)
-        //   .then((result) => {
-        //     console.log(result);
-        //     this.setState({
-        //       provinceList: result,
-        //     });
-        //     //console.log(this.state.provinceList);
-        //   });
-
-        //get lokal
         axios
             .get("https://kbdsi-mtsys.herokuapp.com/v0/province/retrieve-all", {
                 headers: {
@@ -230,9 +219,98 @@ class Province extends Component {
                 });
                 //console.log(this.state.provinceList);
             });
+
+        //get lokal
+        axios
+            .get("https://kbdsi-mtsys.herokuapp.com/v0/country/retrieve-all", {
+                headers: {
+                    //Accept: "application/json",
+                    Accept: "application/json",
+                    // "Access-Control-Allow-Origin": "*",
+                },
+            })
+            .then((response) => response.data.data)
+            .then((result) => {
+                console.log(result);
+                this.setState({
+                    countryList: result,
+                });
+                //console.log(this.state.provinceList);
+            });
+
+        //get lokal
+        // axios
+        //     .get("https://kbdsi-mtsys.herokuapp.com/v0/province/retrieve-all", {
+        //         headers: {
+        //             //Accept: "application/json",
+        //             Accept: "application/json",
+        //             // "Access-Control-Allow-Origin": "*",
+        //         },
+        //     })
+        //     .then((response) => response.data.data)
+        //     .then((result) => {
+        //         console.log(result);
+        //         this.setState({
+        //             provinceList: result,
+        //         });
+        //         //console.log(this.state.provinceList);
+        //         this.state.provinceList.filter()
+        //     });
+
+
     }
 
+    handleSelect = (hasil) => {
+        this.setState({ selectedCountry: hasil });
+        console.log(`Option selected:`, hasil);
+        axios
+            .request({
+                headers: {
+                    Accept: "application/json",
+                    "Access-Allow-Control-Origin": "*",
+                },
+                method: "post",
+                data: {
+                    data: hasil.code,
+
+
+
+
+
+                    identity: {
+                        platform: "string",
+                        reqDateTime: "string",
+                        token: "string",
+                        userId: "string",
+                    },
+                    paging: {
+                        limit: 0,
+                        page: 0,
+                        totalPage: 0,
+                        totalRecord: 0,
+                    },
+                    service: "string",
+                },
+                url: "https://kbdsi-mtsys.herokuapp.com/v0/province/retrieve-by-code",
+            })
+            .then((response) => response.data.data)
+            .then((result) => {
+                console.log("ini province dari country " + result);
+                this.setState({
+                    provinceList: result,
+                });
+                //console.log(this.state.provinceList);
+            });
+
+    }
+
+
     render() {
+        console.log('selected country isinya ' + this.state.selectedCountry.name);
+        // console.log("daftar provinsi " + this.state.provinceList)
+
+
+
         return (
             <>
                 <div className="container-fluid">
@@ -281,11 +359,18 @@ class Province extends Component {
                                                     <label htmlFor="inputprovinceSelect" className="col-sm-4 col-form-label margin-top-rem-1 label-bold label-mandatory">Country</label>
                                                     <label className="col-sm-1 col-form-label margin-top-rem-1">:</label>
                                                     <div className="col-sm-6 col-form-label margin-top-rem-1 ">
-                                                        <select className="form-control" id="inputprovinceSelect" multiple="">
+                                                        {/* <select className="form-control" id="inputprovinceSelect" multiple="">
                                                             <option value="ID">INDONESIA</option>
                                                             <option value="usa">USA</option>
                                                             <option value="sk">SOUTH KOREA</option>
-                                                        </select>
+                                                        </select> */}
+
+                                                        <Select options={this.state.countryList}
+                                                            getOptionLabel={(option) => option.name}
+                                                            onChange={this.handleSelect}
+                                                        />
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -312,7 +397,7 @@ class Province extends Component {
                                                 <div className="col-md-4">
                                                     <button type={"submit"} className="btn btn-primary btn-min-width margin-top-rem-1 ">Search</button>
                                                     &nbsp;
-                                                    <button type="button" className="btn btn-primary btn-min-width margin-top-rem-1" onClick={this.addOnClick}>Add</button>
+                                                    <NavLink className="btn btn-primary btn-min-width margin-top-rem-1 button-wrapper" to="/provinceAdd">Add</NavLink>
                                                 </div>
                                             </div>
                                         </div>

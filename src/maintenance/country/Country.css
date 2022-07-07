@@ -1,20 +1,29 @@
 .btn-min-width {
-    min-width: 70px;
+  min-width: 70px;
 }
 
 .label-bold {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .label-mandatory {
-    color: blue;    
+  color: blue;
 }
 
 .row-highlight {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  
-  .margin-top-rem-1 {
-      margin-top: 1rem;
-  }
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.margin-top-rem-1 {
+  margin-top: 1rem;
+}
+
+.dino-image {
+  width: 500;
+  height: 250;
+}
+
+h1 {
+  color: red;
+}
